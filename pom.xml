@@ -36,7 +36,6 @@ along with ao-messaging-tcp-client.  If not, see <http://www.gnu.org/licenses />
 	<packaging>jar</packaging>
 
 	<properties>
-		<bookPath>/${project.parent.artifactId}/tcp/client</bookPath>
 		<shortTitle>Client</shortTitle>
 		<javadoc.breadcrumbs><![CDATA[<a target="_top" href="${project.parent.url}">${project.parent.name}</a>
 / <a target="_top" href="${project.parent.url}tcp/">TCP</a>
@@ -44,7 +43,7 @@ along with ao-messaging-tcp-client.  If not, see <http://www.gnu.org/licenses />
 	</properties>
 
 	<name>AO Messaging TCP Client</name>
-	<url>https://aoindustries.com${bookPath}/</url><!-- Can't inherit due to multi-module -->
+	<url>https://aoindustries.com/${project.parent.artifactId}/tcp/client/</url>
 	<description>Client for asynchronous bidirectional messaging over TCP sockets.</description>
 	<inceptionYear>2014</inceptionYear>
 

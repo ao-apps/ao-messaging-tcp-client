@@ -26,8 +26,9 @@ along with ao-messaging-tcp-client.  If not, see <http://www.gnu.org/licenses />
 
 	<parent>
 		<groupId>com.aoindustries</groupId>
-		<artifactId>ao-messaging</artifactId>
-		<version>1.0.2-SNAPSHOT</version>
+		<artifactId>ao-oss-parent</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>../../ao-oss-parent/pom.xml</relativePath>
 	</parent>
 
 	<groupId>com.aoindustries</groupId>
@@ -36,14 +37,14 @@ along with ao-messaging-tcp-client.  If not, see <http://www.gnu.org/licenses />
 	<packaging>jar</packaging>
 
 	<properties>
-		<shortTitle>Client</shortTitle>
-		<javadoc.breadcrumbs><![CDATA[<a target="_top" href="${project.parent.url}">${project.parent.name}</a>
-/ <a target="_top" href="${project.parent.url}tcp/">TCP</a>
+		<javadoc.breadcrumbs><![CDATA[<a target="_top" href="https://aoindustries.com/ao-messaging/">AO Messaging</a>
+/ <a target="_top" href="https://aoindustries.com/ao-messaging/tcp/">TCP</a>
 / <a target="_top" href="${project.url}">${shortTitle}</a>]]></javadoc.breadcrumbs>
+		<shortTitle>Client</shortTitle>
 	</properties>
 
 	<name>AO Messaging TCP Client</name>
-	<url>https://aoindustries.com/${project.parent.artifactId}/tcp/client/</url>
+	<url>https://aoindustries.com/ao-messaging/tcp/client/</url>
 	<description>Client for asynchronous bidirectional messaging over TCP sockets.</description>
 	<inceptionYear>2014</inceptionYear>
 

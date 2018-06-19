@@ -1,4 +1,4 @@
-# [<img src="ao-logo.png" alt="AO Logo" width="35" height="40">](https://aoindustries.com/) [AO Messaging](https://aoindustries.com/ao-messaging/) / [TCP](https://aoindustries.com/ao-messaging/tcp/) / [Client](https://aoindustries.com/ao-messaging/tcp/client/)
+# [<img src="ao-logo.png" alt="AO Logo" width="35" height="40">](https://github.com/aoindustries) [AO Messaging](https://github.com/aoindustries/ao-messaging) / [TCP](https://github.com/aoindustries/ao-messaging-tcp) / [Client](https://github.com/aoindustries/ao-messaging-tcp-client)
 <p>
 	<a href="https://aoindustries.com/life-cycle#project-current-stable">
 		<img src="https://aoindustries.com/ao-badges/project-current-stable.svg" alt="project: current stable" />

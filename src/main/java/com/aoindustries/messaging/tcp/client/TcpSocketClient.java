@@ -1,6 +1,6 @@
 /*
  * ao-messaging-tcp-client - Client for asynchronous bidirectional messaging over TCP sockets.
- * Copyright (C) 2014, 2015, 2016  AO Industries, Inc.
+ * Copyright (C) 2014, 2015, 2016, 2019  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -22,13 +22,14 @@
  */
 package com.aoindustries.messaging.tcp.client;
 
-import com.aoindustries.io.CompressedDataInputStream;
-import com.aoindustries.io.CompressedDataOutputStream;
+import com.aoindustries.io.stream.StreamableInput;
+import com.aoindustries.io.stream.StreamableOutput;
 import com.aoindustries.messaging.base.AbstractSocketContext;
 import com.aoindustries.messaging.tcp.TcpSocket;
 import com.aoindustries.security.Identifier;
 import com.aoindustries.util.concurrent.Callback;
 import com.aoindustries.util.concurrent.Executors;
+import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketAddress;
 
@@ -84,9 +85,9 @@ public class TcpSocketClient extends AbstractSocketContext<TcpSocket> {
 						if(DEBUG) System.out.println("DEBUG: TcpSocketClient: connect: got connection");
 						boolean successful = false;
 						try {
-							CompressedDataInputStream in = new CompressedDataInputStream(socket.getInputStream());
+							StreamableInput in = new StreamableInput(socket.getInputStream());
 							if(DEBUG) System.out.println("DEBUG: TcpSocketClient: connect: got in");
-							CompressedDataOutputStream out = new CompressedDataOutputStream(socket.getOutputStream());
+							StreamableOutput out = new StreamableOutput(socket.getOutputStream());
 							if(DEBUG) System.out.println("DEBUG: TcpSocketClient: connect: got out");
 							Identifier id = new Identifier(in.readLong(), in.readLong());
 							if(DEBUG) System.out.println("DEBUG: TcpSocketClient: connect: got id=" + id);
@@ -110,7 +111,7 @@ public class TcpSocketClient extends AbstractSocketContext<TcpSocket> {
 								socket.close();
 							}
 						}
-					} catch(Exception exc) {
+					} catch(RuntimeException | IOException exc) {
 						if(onError!=null) {
 							if(DEBUG) System.out.println("DEBUG: TcpSocketClient: connect: calling onError");
 							onError.call(exc);

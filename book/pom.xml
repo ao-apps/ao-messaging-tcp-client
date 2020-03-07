@@ -35,8 +35,6 @@ along with ao-messaging-tcp-client.  If not, see <http://www.gnu.org/licenses />
 	<properties>
 		<!-- These values are copied from the project being documented -->
 		<documented.artifactId>ao-messaging-tcp-client</documented.artifactId>
-		<documented.javaVersion>1.8</documented.javaVersion>
-		<documented.javac.link.javaApi>${javac.link.javaApi.jdk8}</documented.javac.link.javaApi>
 		<documented.name>AO Messaging TCP Client</documented.name>
 		<documented.shortTitle>Client</documented.shortTitle>
 		<documented.description>Client for asynchronous bidirectional messaging over TCP sockets.</documented.description>

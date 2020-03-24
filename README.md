@@ -27,7 +27,7 @@ Client for asynchronous bidirectional messaging over TCP sockets.
 * [Project Home](https://aoindustries.com/ao-messaging/tcp/client/)
 * [Changelog](https://aoindustries.com/ao-messaging/tcp/client/changelog)
 * [API Docs](https://aoindustries.com/ao-messaging/tcp/client/apidocs/)
-* [Maven Central Repository](https://search.maven.org/#search%7Cgav%7C1%7Cg:%22com.aoindustries%22%20AND%20a:%22ao-messaging-tcp-client%22)
+* [Maven Central Repository](https://search.maven.org/artifact/com.aoindustries/ao-messaging-tcp-client)
 * [GitHub](https://github.com/aoindustries/ao-messaging-tcp-client)
 
 ## Contact Us

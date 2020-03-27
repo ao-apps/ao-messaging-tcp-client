@@ -71,54 +71,49 @@ public class TcpSocketClient extends AbstractSocketContext<TcpSocket> {
 		final Callback<? super TcpSocket> onConnect,
 		final Callback<? super Exception> onError
 	) {
-		executors.getUnbounded().submit(
-			new Runnable() {
-				@Override
-				public void run() {
-					try {
-						Socket socket = new Socket();
-						socket.setKeepAlive(KEEPALIVE);
-						socket.setSoLinger(SOCKET_SO_LINGER_ENABLED, SOCKET_SO_LINGER_SECONDS);
-						socket.setTcpNoDelay(TCP_NO_DELAY);
-						long connectTime = System.currentTimeMillis();
-						socket.connect(endpoint, CONNECT_TIMEOUT);
-						if(DEBUG) System.out.println("DEBUG: TcpSocketClient: connect: got connection");
-						boolean successful = false;
-						try {
-							StreamableInput in = new StreamableInput(socket.getInputStream());
-							if(DEBUG) System.out.println("DEBUG: TcpSocketClient: connect: got in");
-							StreamableOutput out = new StreamableOutput(socket.getOutputStream());
-							if(DEBUG) System.out.println("DEBUG: TcpSocketClient: connect: got out");
-							Identifier id = new Identifier(in.readLong(), in.readLong());
-							if(DEBUG) System.out.println("DEBUG: TcpSocketClient: connect: got id=" + id);
-							TcpSocket tcpSocket = new TcpSocket(
-								TcpSocketClient.this,
-								id,
-								connectTime,
-								socket,
-								in,
-								out
-							);
-							if(DEBUG) System.out.println("DEBUG: TcpSocketClient: connect: adding socket");
-							addSocket(tcpSocket);
-							if(onConnect!=null) {
-								if(DEBUG) System.out.println("DEBUG: TcpSocketClient: connect: calling onConnect");
-								onConnect.call(tcpSocket);
-							}
-							successful = true;
-						} finally {
-							if(!successful) {
-								socket.close();
-							}
-						}
-					} catch(RuntimeException | IOException exc) {
-						if(onError!=null) {
-							if(DEBUG) System.out.println("DEBUG: TcpSocketClient: connect: calling onError");
-							onError.call(exc);
-						}
+		executors.getUnbounded().submit(() -> {
+			try {
+				Socket socket = new Socket();
+				socket.setKeepAlive(KEEPALIVE);
+				socket.setSoLinger(SOCKET_SO_LINGER_ENABLED, SOCKET_SO_LINGER_SECONDS);
+				socket.setTcpNoDelay(TCP_NO_DELAY);
+				long connectTime = System.currentTimeMillis();
+				socket.connect(endpoint, CONNECT_TIMEOUT);
+				if(DEBUG) System.out.println("DEBUG: TcpSocketClient: connect: got connection");
+				boolean successful = false;
+				try {
+					StreamableInput in = new StreamableInput(socket.getInputStream());
+					if(DEBUG) System.out.println("DEBUG: TcpSocketClient: connect: got in");
+					StreamableOutput out = new StreamableOutput(socket.getOutputStream());
+					if(DEBUG) System.out.println("DEBUG: TcpSocketClient: connect: got out");
+					Identifier id = new Identifier(in.readLong(), in.readLong());
+					if(DEBUG) System.out.println("DEBUG: TcpSocketClient: connect: got id=" + id);
+					TcpSocket tcpSocket = new TcpSocket(
+						TcpSocketClient.this,
+						id,
+						connectTime,
+						socket,
+						in,
+						out
+					);
+					if(DEBUG) System.out.println("DEBUG: TcpSocketClient: connect: adding socket");
+					addSocket(tcpSocket);
+					if(onConnect!=null) {
+						if(DEBUG) System.out.println("DEBUG: TcpSocketClient: connect: calling onConnect");
+						onConnect.call(tcpSocket);
+					}
+					successful = true;
+				} finally {
+					if(!successful) {
+						socket.close();
 					}
 				}
+			} catch(RuntimeException | IOException exc) {
+				if(onError!=null) {
+					if(DEBUG) System.out.println("DEBUG: TcpSocketClient: connect: calling onError");
+					onError.call(exc);
+				}
 			}
-		);
+		});
 	}
 }

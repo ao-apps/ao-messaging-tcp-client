@@ -29,16 +29,17 @@ import com.aoindustries.io.stream.StreamableOutput;
 import com.aoindustries.messaging.base.AbstractSocketContext;
 import com.aoindustries.messaging.tcp.TcpSocket;
 import com.aoindustries.security.Identifier;
-import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Client component for bi-directional messaging over TCP.
  */
 public class TcpSocketClient extends AbstractSocketContext<TcpSocket> {
 
-	private static final boolean DEBUG = false;
+	private static final Logger logger = Logger.getLogger(TcpSocketClient.class.getName());
 
 	private static final boolean KEEPALIVE = true;
 
@@ -66,10 +67,11 @@ public class TcpSocketClient extends AbstractSocketContext<TcpSocket> {
 	/**
 	 * Asynchronously connects.
 	 */
+	@SuppressWarnings({"UseSpecificCatch", "TooBroadCatch"})
 	public void connect(
-		final SocketAddress endpoint,
-		final Callback<? super TcpSocket> onConnect,
-		final Callback<? super Exception> onError
+		SocketAddress endpoint,
+		Callback<? super TcpSocket> onConnect,
+		Callback<? super Throwable> onError
 	) {
 		executors.getUnbounded().submit(() -> {
 			try {
@@ -79,15 +81,15 @@ public class TcpSocketClient extends AbstractSocketContext<TcpSocket> {
 				socket.setTcpNoDelay(TCP_NO_DELAY);
 				long connectTime = System.currentTimeMillis();
 				socket.connect(endpoint, CONNECT_TIMEOUT);
-				if(DEBUG) System.out.println("DEBUG: TcpSocketClient: connect: got connection");
+				logger.log(Level.FINEST, "Got connection");
 				boolean successful = false;
 				try {
 					StreamableInput in = new StreamableInput(socket.getInputStream());
-					if(DEBUG) System.out.println("DEBUG: TcpSocketClient: connect: got in");
+					logger.log(Level.FINEST, "Got in");
 					StreamableOutput out = new StreamableOutput(socket.getOutputStream());
-					if(DEBUG) System.out.println("DEBUG: TcpSocketClient: connect: got out");
+					logger.log(Level.FINEST, "Got out");
 					Identifier id = new Identifier(in.readLong(), in.readLong());
-					if(DEBUG) System.out.println("DEBUG: TcpSocketClient: connect: got id=" + id);
+					logger.log(Level.FINEST, "Got id = {0}", id);
 					TcpSocket tcpSocket = new TcpSocket(
 						TcpSocketClient.this,
 						id,
@@ -96,22 +98,46 @@ public class TcpSocketClient extends AbstractSocketContext<TcpSocket> {
 						in,
 						out
 					);
-					if(DEBUG) System.out.println("DEBUG: TcpSocketClient: connect: adding socket");
+					logger.log(Level.FINEST, "Adding socket");
 					addSocket(tcpSocket);
-					if(onConnect!=null) {
-						if(DEBUG) System.out.println("DEBUG: TcpSocketClient: connect: calling onConnect");
-						onConnect.call(tcpSocket);
+					if(onConnect != null) {
+						logger.log(Level.FINE, "Calling onConnect: {0}", tcpSocket);
+						try {
+							onConnect.call(tcpSocket);
+						} catch(ThreadDeath td) {
+							throw td;
+						} catch(Throwable t) {
+							logger.log(Level.SEVERE, null, t);
+						}
+					} else {
+						logger.log(Level.FINE, "No onConnect: {0}", tcpSocket);
 					}
 					successful = true;
 				} finally {
 					if(!successful) {
-						socket.close();
+						try {
+							socket.close();
+						} catch(ThreadDeath td) {
+							throw td;
+						} catch(Throwable t) {
+							logger.log(Level.SEVERE, null, t);
+						}
 					}
 				}
-			} catch(RuntimeException | IOException exc) {
-				if(onError!=null) {
-					if(DEBUG) System.out.println("DEBUG: TcpSocketClient: connect: calling onError");
-					onError.call(exc);
+			} catch(ThreadDeath td) {
+				throw td;
+			} catch(Throwable t) {
+				if(onError != null) {
+					logger.log(Level.FINE, "Calling onError", t);
+					try {
+						onError.call(t);
+					} catch(ThreadDeath td) {
+						throw td;
+					} catch(Throwable t2) {
+						logger.log(Level.SEVERE, null, t2);
+					}
+				} else {
+					logger.log(Level.FINE, "No onError", t);
 				}
 			}
 		});

@@ -26,6 +26,7 @@ import com.aoindustries.concurrent.Callback;
 import com.aoindustries.concurrent.Executors;
 import com.aoindustries.io.stream.StreamableInput;
 import com.aoindustries.io.stream.StreamableOutput;
+import com.aoindustries.lang.Throwables;
 import com.aoindustries.messaging.base.AbstractSocketContext;
 import com.aoindustries.messaging.tcp.TcpSocket;
 import com.aoindustries.security.Identifier;
@@ -67,7 +68,7 @@ public class TcpSocketClient extends AbstractSocketContext<TcpSocket> {
 	/**
 	 * Asynchronously connects.
 	 */
-	@SuppressWarnings({"UseSpecificCatch", "TooBroadCatch"})
+	@SuppressWarnings({"UseSpecificCatch", "TooBroadCatch", "AssignmentToCatchBlockParameter"})
 	public void connect(
 		SocketAddress endpoint,
 		Callback<? super TcpSocket> onConnect,
@@ -124,21 +125,20 @@ public class TcpSocketClient extends AbstractSocketContext<TcpSocket> {
 						}
 					}
 				}
-			} catch(ThreadDeath td) {
-				throw td;
 			} catch(Throwable t) {
 				if(onError != null) {
 					logger.log(Level.FINE, "Calling onError", t);
 					try {
 						onError.call(t);
 					} catch(ThreadDeath td) {
-						throw td;
+						t = Throwables.addSuppressed(t, td);
 					} catch(Throwable t2) {
 						logger.log(Level.SEVERE, null, t2);
 					}
 				} else {
 					logger.log(Level.FINE, "No onError", t);
 				}
+				if(t instanceof ThreadDeath) throw (ThreadDeath)t;
 			}
 		});
 	}

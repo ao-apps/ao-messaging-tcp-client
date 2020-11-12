@@ -61,7 +61,7 @@ public class TcpSocketClient extends AbstractSocketContext<TcpSocket> {
 		try {
 			super.close();
 		} finally {
-			executors.dispose();
+			executors.close();
 		}
 	}
 

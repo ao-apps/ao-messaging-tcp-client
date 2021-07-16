@@ -45,7 +45,7 @@ along with ao-messaging-tcp-client.  If not, see <http://www.gnu.org/licenses />
 / <a target="${javadoc.target}" href="https://oss.aoapps.com/messaging/">Messaging</a>
 / <a target="${javadoc.target}" href="https://oss.aoapps.com/messaging/tcp/">TCP</a>
 / <a target="${javadoc.target}" href="${project.url}">Client</a>]]></javadoc.breadcrumbs>
-		<!-- SonarCloud.io -->
+		<!-- SonarQube -->
 		<sonar.projectKey>${project.groupId}:${project.artifactId}</sonar.projectKey>
 		<sonar.organization>aoindustries</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>

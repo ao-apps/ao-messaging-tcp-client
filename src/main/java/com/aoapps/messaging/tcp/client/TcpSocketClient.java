@@ -53,9 +53,6 @@ public class TcpSocketClient extends AbstractSocketContext<TcpSocket> {
 
 	private final Executors executors = new Executors();
 
-	public TcpSocketClient() {
-	}
-
 	@Override
 	public void close() {
 		try {

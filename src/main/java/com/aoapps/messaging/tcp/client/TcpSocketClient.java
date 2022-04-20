@@ -41,104 +41,106 @@ import java.util.logging.Logger;
  */
 public class TcpSocketClient extends AbstractSocketContext<TcpSocket> {
 
-	private static final Logger logger = Logger.getLogger(TcpSocketClient.class.getName());
+  private static final Logger logger = Logger.getLogger(TcpSocketClient.class.getName());
 
-	private static final boolean KEEPALIVE = true;
+  private static final boolean KEEPALIVE = true;
 
-	private static final boolean SOCKET_SO_LINGER_ENABLED = true;
-	private static final int SOCKET_SO_LINGER_SECONDS = 15;
+  private static final boolean SOCKET_SO_LINGER_ENABLED = true;
+  private static final int SOCKET_SO_LINGER_SECONDS = 15;
 
-	private static final boolean TCP_NO_DELAY = true;
+  private static final boolean TCP_NO_DELAY = true;
 
-	private static final int CONNECT_TIMEOUT = 15 * 1000;
+  private static final int CONNECT_TIMEOUT = 15 * 1000;
 
-	private final Executors executors = new Executors();
+  private final Executors executors = new Executors();
 
-	@Override
-	public void close() {
-		try {
-			super.close();
-		} finally {
-			executors.close();
-		}
-	}
+  @Override
+  public void close() {
+    try {
+      super.close();
+    } finally {
+      executors.close();
+    }
+  }
 
-	/**
-	 * Asynchronously connects.
-	 */
-	@SuppressWarnings({"UseSpecificCatch", "TooBroadCatch", "AssignmentToCatchBlockParameter"})
-	public void connect(
-		SocketAddress endpoint,
-		Callback<? super TcpSocket> onConnect,
-		Callback<? super Throwable> onError
-	) {
-		executors.getUnbounded().submit(() -> {
-			try {
-				Socket socket = new Socket();
-				socket.setKeepAlive(KEEPALIVE);
-				socket.setSoLinger(SOCKET_SO_LINGER_ENABLED, SOCKET_SO_LINGER_SECONDS);
-				socket.setTcpNoDelay(TCP_NO_DELAY);
-				long connectTime = System.currentTimeMillis();
-				socket.connect(endpoint, CONNECT_TIMEOUT);
-				logger.log(Level.FINEST, "Got connection");
-				boolean successful = false;
-				try {
-					StreamableInput in = new StreamableInput(socket.getInputStream());
-					logger.log(Level.FINEST, "Got in");
-					StreamableOutput out = new StreamableOutput(socket.getOutputStream());
-					logger.log(Level.FINEST, "Got out");
-					Identifier id = new Identifier(in.readLong(), in.readLong());
-					logger.log(Level.FINEST, "Got id = {0}", id);
-					TcpSocket tcpSocket = new TcpSocket(
-						TcpSocketClient.this,
-						id,
-						connectTime,
-						socket,
-						in,
-						out
-					);
-					logger.log(Level.FINEST, "Adding socket");
-					addSocket(tcpSocket);
-					if(onConnect != null) {
-						logger.log(Level.FINE, "Calling onConnect: {0}", tcpSocket);
-						try {
-							onConnect.call(tcpSocket);
-						} catch(ThreadDeath td) {
-							throw td;
-						} catch(Throwable t) {
-							logger.log(Level.SEVERE, null, t);
-						}
-					} else {
-						logger.log(Level.FINE, "No onConnect: {0}", tcpSocket);
-					}
-					successful = true;
-				} finally {
-					if(!successful) {
-						try {
-							socket.close();
-						} catch(ThreadDeath td) {
-							throw td;
-						} catch(Throwable t) {
-							logger.log(Level.SEVERE, null, t);
-						}
-					}
-				}
-			} catch(Throwable t0) {
-				if(onError != null) {
-					logger.log(Level.FINE, "Calling onError", t0);
-					try {
-						onError.call(t0);
-					} catch(ThreadDeath td) {
-						t0 = Throwables.addSuppressed(td, t0);
-						assert t0 == td;
-					} catch(Throwable t2) {
-						logger.log(Level.SEVERE, null, t2);
-					}
-				} else {
-					logger.log(Level.FINE, "No onError", t0);
-				}
-				if(t0 instanceof ThreadDeath) throw (ThreadDeath)t0;
-			}
-		});
-	}
+  /**
+   * Asynchronously connects.
+   */
+  @SuppressWarnings({"UseSpecificCatch", "TooBroadCatch", "AssignmentToCatchBlockParameter"})
+  public void connect(
+    SocketAddress endpoint,
+    Callback<? super TcpSocket> onConnect,
+    Callback<? super Throwable> onError
+  ) {
+    executors.getUnbounded().submit(() -> {
+      try {
+        Socket socket = new Socket();
+        socket.setKeepAlive(KEEPALIVE);
+        socket.setSoLinger(SOCKET_SO_LINGER_ENABLED, SOCKET_SO_LINGER_SECONDS);
+        socket.setTcpNoDelay(TCP_NO_DELAY);
+        long connectTime = System.currentTimeMillis();
+        socket.connect(endpoint, CONNECT_TIMEOUT);
+        logger.log(Level.FINEST, "Got connection");
+        boolean successful = false;
+        try {
+          StreamableInput in = new StreamableInput(socket.getInputStream());
+          logger.log(Level.FINEST, "Got in");
+          StreamableOutput out = new StreamableOutput(socket.getOutputStream());
+          logger.log(Level.FINEST, "Got out");
+          Identifier id = new Identifier(in.readLong(), in.readLong());
+          logger.log(Level.FINEST, "Got id = {0}", id);
+          TcpSocket tcpSocket = new TcpSocket(
+            TcpSocketClient.this,
+            id,
+            connectTime,
+            socket,
+            in,
+            out
+          );
+          logger.log(Level.FINEST, "Adding socket");
+          addSocket(tcpSocket);
+          if (onConnect != null) {
+            logger.log(Level.FINE, "Calling onConnect: {0}", tcpSocket);
+            try {
+              onConnect.call(tcpSocket);
+            } catch (ThreadDeath td) {
+              throw td;
+            } catch (Throwable t) {
+              logger.log(Level.SEVERE, null, t);
+            }
+          } else {
+            logger.log(Level.FINE, "No onConnect: {0}", tcpSocket);
+          }
+          successful = true;
+        } finally {
+          if (!successful) {
+            try {
+              socket.close();
+            } catch (ThreadDeath td) {
+              throw td;
+            } catch (Throwable t) {
+              logger.log(Level.SEVERE, null, t);
+            }
+          }
+        }
+      } catch (Throwable t0) {
+        if (onError != null) {
+          logger.log(Level.FINE, "Calling onError", t0);
+          try {
+            onError.call(t0);
+          } catch (ThreadDeath td) {
+            t0 = Throwables.addSuppressed(td, t0);
+            assert t0 == td;
+          } catch (Throwable t2) {
+            logger.log(Level.SEVERE, null, t2);
+          }
+        } else {
+          logger.log(Level.FINE, "No onError", t0);
+        }
+        if (t0 instanceof ThreadDeath) {
+          throw (ThreadDeath)t0;
+        }
+      }
+    });
+  }
 }

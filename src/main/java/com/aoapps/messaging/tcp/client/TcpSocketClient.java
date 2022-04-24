@@ -68,9 +68,9 @@ public class TcpSocketClient extends AbstractSocketContext<TcpSocket> {
    */
   @SuppressWarnings({"UseSpecificCatch", "TooBroadCatch", "AssignmentToCatchBlockParameter"})
   public void connect(
-    SocketAddress endpoint,
-    Callback<? super TcpSocket> onConnect,
-    Callback<? super Throwable> onError
+      SocketAddress endpoint,
+      Callback<? super TcpSocket> onConnect,
+      Callback<? super Throwable> onError
   ) {
     executors.getUnbounded().submit(() -> {
       try {
@@ -90,12 +90,12 @@ public class TcpSocketClient extends AbstractSocketContext<TcpSocket> {
           Identifier id = new Identifier(in.readLong(), in.readLong());
           logger.log(Level.FINEST, "Got id = {0}", id);
           TcpSocket tcpSocket = new TcpSocket(
-            TcpSocketClient.this,
-            id,
-            connectTime,
-            socket,
-            in,
-            out
+              TcpSocketClient.this,
+              id,
+              connectTime,
+              socket,
+              in,
+              out
           );
           logger.log(Level.FINEST, "Adding socket");
           addSocket(tcpSocket);
@@ -138,7 +138,7 @@ public class TcpSocketClient extends AbstractSocketContext<TcpSocket> {
           logger.log(Level.FINE, "No onError", t0);
         }
         if (t0 instanceof ThreadDeath) {
-          throw (ThreadDeath)t0;
+          throw (ThreadDeath) t0;
         }
       }
     });

@@ -255,7 +255,7 @@ along with ao-messaging-tcp-client.  If not, see <https://www.gnu.org/licenses/>
         <groupId>com.aoapps</groupId><artifactId>ao-messaging-base</artifactId><version>3.0.0${POST-SNAPSHOT}</version>
       </dependency>
       <dependency>
-        <groupId>com.aoapps</groupId><artifactId>ao-messaging-tcp</artifactId><version>3.0.0${POST-SNAPSHOT}</version>
+        <groupId>com.aoapps</groupId><artifactId>ao-messaging-tcp</artifactId><version>3.1.0-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
       </dependency>
       <dependency>
         <groupId>com.aoapps</groupId><artifactId>ao-security</artifactId><version>3.1.0${POST-SNAPSHOT}</version>
@@ -265,7 +265,7 @@ along with ao-messaging-tcp-client.  If not, see <https://www.gnu.org/licenses/>
         <groupId>com.aoapps</groupId><artifactId>ao-collections</artifactId><version>3.0.0${POST-SNAPSHOT}</version>
       </dependency>
       <dependency>
-        <groupId>com.aoapps</groupId><artifactId>ao-messaging-api</artifactId><version>3.0.0${POST-SNAPSHOT}</version>
+        <groupId>com.aoapps</groupId><artifactId>ao-messaging-api</artifactId><version>3.1.0-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
       </dependency>
       <dependency>
         <groupId>com.aoapps</groupId><artifactId>ao-tempfiles</artifactId><version>3.0.1${POST-SNAPSHOT}</version>

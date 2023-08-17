@@ -30,7 +30,7 @@ along with ao-messaging-tcp-client.  If not, see <https://www.gnu.org/licenses/>
   </parent>
 
   <groupId>com.aoapps</groupId><artifactId>ao-messaging-tcp-client</artifactId><version>3.0.0-POST-SNAPSHOT</version>
-  <packaging>bundle</packaging>
+  <packaging>jar</packaging>
 
   <properties>
     <module.name>com.aoapps.messaging.tcp.client</module.name>
